@@ -1,0 +1,15 @@
+<package>
+  <name>behaviorlib_msg</name>
+  <version>0.2.1</version>
+  <description>The behaviorlib_msg package, containing the required messages for the behaviorlib package </description>
+
+  <author>Pablo Santamaria</author>
+  <maintainer email="aerostack.upm@gmail.com">Aerostack group</maintainer>
+  <license>BSD-3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>message_generation</build_depend>
+
+  <run_depend>message_runtime</run_depend>
+</package>

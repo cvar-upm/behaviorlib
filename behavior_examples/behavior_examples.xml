@@ -1,0 +1,14 @@
+<library path="lib/libbehavior_examples">
+	<class name="behavior_examples/BehaviorMoveForward" type="behavior_examples::BehaviorMoveForward"
+		base_class_type="nodelet::Nodelet">
+		<description>
+			BehaviorMoveForward.
+		</description>
+	</class>
+	<class name="behavior_examples/BehaviorMoveToPoint" type="behavior_examples::BehaviorMoveToPoint"
+		base_class_type="nodelet::Nodelet">
+		<description>
+			BehaviorMoveToPoint.
+		</description>
+	</class>
+</library>

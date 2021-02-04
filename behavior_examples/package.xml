@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>behavior_examples</name>
+  <version>1.0.0</version>
+  <description>Examples of behaviors for the behaviorlib package</description>
+
+  <author>Pablo Santamaria</author>
+  <maintainer email="aerostack.upm@gmail.com">Aerostack group</maintainer>
+
+  <license>BSD-3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>nodelet</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>yaml-cpp</build_depend>
+  <build_depend>behaviorlib</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>turtlesim</build_depend>
+
+  <run_depend>roscpp</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>yaml-cpp</run_depend>
+  <run_depend>behaviorlib</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>turtlesim</run_depend>
+
+  <export>
+    <nodelet plugin="${prefix}/behavior_examples.xml" />
+  </export>
+</package>

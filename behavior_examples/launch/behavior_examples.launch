@@ -1,0 +1,24 @@
+<launch>
+    <arg name="namespace"                          default="drone1" />
+    <arg name="frecuency"                          default="100.0" />
+    <arg name="activate_behavior_srv"              default="activate_behavior" />
+    <arg name="deactivate_behavior_srv"            default="deactivate_behavior" />
+    <arg name="check_activation_conditions_srv"    default="check_activation_conditions" />
+    <arg name="activation_finished_topic"          default="behavior_activation_finished" />
+    <arg name="behavior_system"                    default="behavior_examples" />
+    
+   <group ns="$(arg namespace)/$(arg behavior_system)">
+      <param name="~namespace"                           value="$(arg namespace)"                          type="str" />
+      <param name="~frecuency"                           value="$(arg frecuency)"                          type="double" />
+      <param name="~activate_behavior_srv"               value="$(arg activate_behavior_srv)"              type="str" />
+      <param name="~deactivate_behavior_srv"             value="$(arg deactivate_behavior_srv)"            type="str" />
+      <param name="~check_activation_conditions_srv"     value="$(arg check_activation_conditions_srv)"    type="str" />
+      <param name="~behavior_system"                     value="$(arg behavior_system)"                    type="str" />
+      
+       <node pkg="nodelet" type="nodelet" args="manager" name="behavior_examples_manager" output="screen" />
+       <node pkg="nodelet" type="nodelet" args="load behavior_examples/BehaviorMoveForward behavior_examples_manager"
+        name="behavior_move_forward" output="screen"/>
+       <node pkg="nodelet" type="nodelet" args="load behavior_examples/BehaviorMoveToPoint behavior_examples_manager"
+        name="behavior_move_to_point" output="screen"/>
+  </group>
+</launch>
