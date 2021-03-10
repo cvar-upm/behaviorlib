@@ -116,7 +116,7 @@ BehaviorMoveToPoint::BehaviorMoveToPoint() : BehaviorExecutionManager()
       vel_msg.linear.x = 0;
       vel_msg.angular.z = 0;
       vel_pub.publish(vel_msg);
-      BehaviorExecutionManager::setTerminationCause(behavior_execution_manager_msg::BehaviorActivationFinished::GOAL_ACHIEVED);
+      BehaviorExecutionManager::setTerminationCause(behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED);
       std::cout<<"Behavior move_to_point Finished"<<std::endl;
     }
   }

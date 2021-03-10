@@ -29,7 +29,7 @@ find_package(catkin REQUIRED
   COMPONENTS
   roscpp
   std_msgs
-  behavior_execution_manager_msg
+  behavior_execution_manager_msgs
 )
 
 ###################################
@@ -45,7 +45,7 @@ catkin_package(
   CATKIN_DEPENDS
   roscpp
   std_msgs
-  behavior_execution_manager_msg
+  behavior_execution_manager_msgs
 )
 
 ###########

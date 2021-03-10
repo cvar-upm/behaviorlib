@@ -44,7 +44,7 @@
 #include <BehaviorExecutionManager.h>
 
 // behavior_execution_manager msgs
-#include <behavior_execution_manager_msg/BehaviorActivationFinished.h>
+#include <behavior_execution_manager_msgs/BehaviorActivationFinished.h>
 
 class BehaviorMoveToPoint : public BehaviorExecutionManager
 {

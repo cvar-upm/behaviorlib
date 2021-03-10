@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(behavior_execution_manager_msg)
+project(behavior_execution_manager_msgs)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs

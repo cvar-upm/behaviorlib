@@ -88,7 +88,7 @@ void BehaviorExecutionManager::configure()
                                    &BehaviorExecutionManager::checkSituationServiceCallback, this);
 
   }
-  activation_finished_pub = node_handle.advertise<behavior_execution_manager_msg::BehaviorActivationFinished>(
+  activation_finished_pub = node_handle.advertise<behavior_execution_manager_msgs::BehaviorActivationFinished>(
       "/" + nspace + "/" + activation_finished_str, 100);
   state = States::INACTIVE;
 }
@@ -97,24 +97,24 @@ void BehaviorExecutionManager::execute()
 { 
   if (state == States::ACTIVE)
   {
-    if (termination_cause != behavior_execution_manager_msg::BehaviorActivationFinished::TIME_OUT)
+    if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT)
     {
       if (execution_goal == ExecutionGoals::ACHIEVE_GOAL)
       {
         checkGoal();
       }
-      if (termination_cause != behavior_execution_manager_msg::BehaviorActivationFinished::GOAL_ACHIEVED)
+      if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED)
       {
         checkProgress();
       }
-      else if (termination_cause != behavior_execution_manager_msg::BehaviorActivationFinished::WRONG_PROGRESS)
+      else if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::WRONG_PROGRESS)
            {
                checkProcesses();
            }
     }
 
    
-   if (termination_cause == behavior_execution_manager_msg::BehaviorActivationFinished::TIME_OUT  || termination_cause == behavior_execution_manager_msg::BehaviorActivationFinished::GOAL_ACHIEVED || termination_cause == behavior_execution_manager_msg::BehaviorActivationFinished::WRONG_PROGRESS || termination_cause == behavior_execution_manager_msg::BehaviorActivationFinished::PROCESS_FAILURE)
+   if (termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT  || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::WRONG_PROGRESS || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::PROCESS_FAILURE)
     {
 
       publishBehaviorActivationFinished();
@@ -140,7 +140,7 @@ void BehaviorExecutionManager::execute()
 
 void BehaviorExecutionManager::publishBehaviorActivationFinished()
 { 
-  behavior_execution_manager_msg::BehaviorActivationFinished activation_finished_msg;
+  behavior_execution_manager_msgs::BehaviorActivationFinished activation_finished_msg;
   std::string behavior_name = getName();
   std::transform(behavior_name.begin(), behavior_name.end(), behavior_name.begin(), ::toupper);
   activation_finished_msg.header.stamp = ros::Time::now();
@@ -152,7 +152,7 @@ void BehaviorExecutionManager::publishBehaviorActivationFinished()
 
 /* Getters */
 
-behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type BehaviorExecutionManager::getTerminationCause()
+behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type BehaviorExecutionManager::getTerminationCause()
 {
   return termination_cause;
 }
@@ -180,7 +180,7 @@ ros::NodeHandle BehaviorExecutionManager::getNodeHandle() {
 
 /* Setters */
 
-void BehaviorExecutionManager::setTerminationCause(behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type termination_cause)
+void BehaviorExecutionManager::setTerminationCause(behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type termination_cause)
 {
   this->termination_cause = termination_cause;
 }
@@ -212,8 +212,8 @@ void BehaviorExecutionManager::setExecutionGoal(ExecutionGoals execution_goal)
 
 /* Callbacks */
 
-bool BehaviorExecutionManager::activateServiceCallback(behavior_execution_manager_msg::ActivateBehavior::Request &req,
-                                                           behavior_execution_manager_msg::ActivateBehavior::Response &resp)
+bool BehaviorExecutionManager::activateServiceCallback(behavior_execution_manager_msgs::ActivateBehavior::Request &req,
+                                                           behavior_execution_manager_msgs::ActivateBehavior::Response &resp)
 {  //unsigned long init=ros::Time::now().toNSec();
     if (state == States::INACTIVE)
     { 
@@ -245,13 +245,13 @@ bool BehaviorExecutionManager::activateServiceCallback(behavior_execution_manage
   return resp.ack;
 }
 
-bool BehaviorExecutionManager::deactivateServiceCallback(behavior_execution_manager_msg::DeactivateBehavior::Request &req,
-                                                             behavior_execution_manager_msg::DeactivateBehavior::Response &resp)
+bool BehaviorExecutionManager::deactivateServiceCallback(behavior_execution_manager_msgs::DeactivateBehavior::Request &req,
+                                                             behavior_execution_manager_msgs::DeactivateBehavior::Response &resp)
 {
   if (state == States::ACTIVE)
   {
     state = States::INACTIVE;
-    termination_cause = behavior_execution_manager_msg::BehaviorActivationFinished::INTERRUPTED;
+    termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::INTERRUPTED;
     publishBehaviorActivationFinished();
     onDeactivate();
     resp.ack = true;
@@ -268,7 +268,7 @@ bool BehaviorExecutionManager::deactivateServiceCallback(behavior_execution_mana
   return resp.ack;
 }
 
-bool BehaviorExecutionManager::checkSituationServiceCallback(behavior_execution_manager_msg::CheckSituation::Request &req, behavior_execution_manager_msg::CheckSituation::Response &resp)
+bool BehaviorExecutionManager::checkSituationServiceCallback(behavior_execution_manager_msgs::CheckSituation::Request &req, behavior_execution_manager_msgs::CheckSituation::Response &resp)
 {
   resp.situation_occurs = checkSituation();
   resp.error_message = error_message;
@@ -278,6 +278,6 @@ bool BehaviorExecutionManager::checkSituationServiceCallback(behavior_execution_
 void BehaviorExecutionManager::notifyTimeout(const ros::TimerEvent &timer_event) 
 {  if (state == States::ACTIVE)
   {
-  termination_cause = behavior_execution_manager_msg::BehaviorActivationFinished::TIME_OUT;
+  termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT;
   }
 }

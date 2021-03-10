@@ -44,10 +44,10 @@
 
 /* Aerostack Messages */
 
-#include <behavior_execution_manager_msg/BehaviorActivationFinished.h>
-#include <behavior_execution_manager_msg/ActivateBehavior.h>
-#include <behavior_execution_manager_msg/DeactivateBehavior.h>
-#include <behavior_execution_manager_msg/CheckSituation.h>
+#include <behavior_execution_manager_msgs/BehaviorActivationFinished.h>
+#include <behavior_execution_manager_msgs/ActivateBehavior.h>
+#include <behavior_execution_manager_msgs/DeactivateBehavior.h>
+#include <behavior_execution_manager_msgs/CheckSituation.h>
 
 
 
@@ -93,7 +93,7 @@ private:
   
   int maximum_execution_time; /* in seconds */
   
-  behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type termination_cause;
+  behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type termination_cause;
 
 
   enum class States
@@ -141,12 +141,12 @@ public:
 
   /* Callbacks */
 
-  bool activateServiceCallback(behavior_execution_manager_msg::ActivateBehavior::Request &,
-                                behavior_execution_manager_msg::ActivateBehavior::Response &);
-  bool deactivateServiceCallback(behavior_execution_manager_msg::DeactivateBehavior::Request &,
-                                  behavior_execution_manager_msg::DeactivateBehavior::Response &);
-  bool checkSituationServiceCallback(behavior_execution_manager_msg::CheckSituation::Request &,
-                                         behavior_execution_manager_msg::CheckSituation::Response &);
+  bool activateServiceCallback(behavior_execution_manager_msgs::ActivateBehavior::Request &,
+                                behavior_execution_manager_msgs::ActivateBehavior::Response &);
+  bool deactivateServiceCallback(behavior_execution_manager_msgs::DeactivateBehavior::Request &,
+                                  behavior_execution_manager_msgs::DeactivateBehavior::Response &);
+  bool checkSituationServiceCallback(behavior_execution_manager_msgs::CheckSituation::Request &,
+                                         behavior_execution_manager_msgs::CheckSituation::Response &);
   void notifyTimeout(const ros::TimerEvent &);
 
 
@@ -158,7 +158,7 @@ protected:
   std::string getParameters();
   std::string getNamespace();
   int getMaximumExecutionTime();
-  behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type getTerminationCause();
+  behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type getTerminationCause();
   ros::NodeHandle getNodeHandle();
 
   /* Setters */
@@ -167,7 +167,7 @@ protected:
   void setParameters(std::string parameters);
   void setErrorMessage(std::string error_message);
   void setMaximumExecutionTime(int maximum_execution_time);
-  void setTerminationCause(behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type);
+  void setTerminationCause(behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type);
   void setExecutionGoal(ExecutionGoals execution_goal);
 
 };
