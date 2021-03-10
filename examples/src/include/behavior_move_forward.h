@@ -28,49 +28,36 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#ifndef MOVE_TO_POINT_H
-#define MOVE_TO_POINT_H
+#ifndef MOVE_FORWARD_H
+#define MOVE_FORWARD_H
 
 // System
 #include <string>
 // ROS
-#include <nodelet/nodelet.h>
 #include <ros/ros.h>
 #include <pluginlib/class_list_macros.h>
 #include <turtlesim/Pose.h>
 #include <geometry_msgs/Twist.h>
-#include <yaml-cpp/yaml.h>
 
-//behaviorlib
-#include <behaviorlib.h>
+//behavior_execution_manager
+#include <BehaviorExecutionManager.h>
 
-// behaviorlib msgs
-#include <behaviorlib_msg/BehaviorActivationFinished.h>
+// behavior_execution_manager msgs
+#include <behavior_execution_manager_msg/BehaviorActivationFinished.h>
 
-namespace behavior_examples
-{
-class BehaviorMoveToPoint : public BehaviorExecutionController
+class BehaviorMoveForward : public BehaviorExecutionManager
 {
   // Constructor
 public:
-  BehaviorMoveToPoint();
-  ~BehaviorMoveToPoint();
+  BehaviorMoveForward();
+  ~BehaviorMoveForward();
+  int main(int argc, char** argv);
 
 private:
   ros::NodeHandle nh;
   std::string nspace;
 
-  ros::Subscriber pose_sub;
   ros::Publisher vel_pub;
-
-  turtlesim::Pose turtlesim_pose;
-  turtlesim::Pose goal_pose;
-
-  double speed, angular_speed;
-	double distance, angle;
-	bool isForward, clockwise;
-  const double PI = 3.14159265359;
-
 
 private:
   void onConfigure();
@@ -83,15 +70,7 @@ private:
   void checkProcesses();
 
 public: // Callbacks
-  void poseCallback(const turtlesim::Pose::ConstPtr & pose_message);
 
-  void move(double speed, double distance, bool isForward);
-  void rotate(double angular_speed, double angle, bool cloclwise);	//this will rotate the turtle at specified angle from its current angle
-  double degrees2radians(double angle_in_degrees);		
-  double setDesiredOrientation(double desired_angle_radians);	//this will rotate the turtle at an absolute angle, whatever its current angle is
-  void moveGoal(turtlesim::Pose goal_pose, double distance_tolerance);	//this will move robot to goal
-  double getDistance(double x1, double y1, double x2, double y2);
 };
-}
 
 #endif

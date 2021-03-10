@@ -1,7 +1,7 @@
 <package>
-  <name>behaviorlib_msg</name>
+  <name>behavior_execution_manager_msg</name>
   <version>0.2.1</version>
-  <description>The behaviorlib_msg package, containing the required messages for the behaviorlib package </description>
+  <description>The behavior_execution_manager_msg package, containing the required messages for the behavior_execution_manager package </description>
 
   <author>Pablo Santamaria</author>
   <maintainer email="aerostack.upm@gmail.com">Aerostack group</maintainer>

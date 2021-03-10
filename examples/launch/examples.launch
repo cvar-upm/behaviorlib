@@ -15,10 +15,7 @@
       <param name="~check_activation_conditions_srv"     value="$(arg check_activation_conditions_srv)"    type="str" />
       <param name="~behavior_system"                     value="$(arg behavior_system)"                    type="str" />
       
-       <node pkg="nodelet" type="nodelet" args="manager" name="behavior_examples_manager" output="screen" />
-       <node pkg="nodelet" type="nodelet" args="load behavior_examples/BehaviorMoveForward behavior_examples_manager"
-        name="behavior_move_forward" output="screen"/>
-       <node pkg="nodelet" type="nodelet" args="load behavior_examples/BehaviorMoveToPoint behavior_examples_manager"
-        name="behavior_move_to_point" output="screen"/>
+	<node name="behavior_move_forward" pkg="examples"  type="BehaviorMoveForward"  output="screen"/>
+	<node name="behavior_move_to_point" pkg="examples"  type="BehaviorMoveToPoint"  output="screen"/>
   </group>
 </launch>

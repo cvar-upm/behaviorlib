@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>behaviorlib</name>
+  <name>behavior_execution_manager</name>
   <version>1.0.0</version>
-  <description>The behaviorlib package</description>
+  <description>The behavior_execution_manager package</description>
 
   <author>Pablo Santamaria</author>
   <maintainer email="aerostack.upm@gmail.com">Aerostack group</maintainer>
@@ -15,12 +15,12 @@
 
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>behaviorlib_msg</build_depend>
+  <build_depend>behavior_execution_manager_msg</build_depend>
 
 
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
-  <run_depend>behaviorlib_msg</run_depend>
+  <run_depend>behavior_execution_manager_msg</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

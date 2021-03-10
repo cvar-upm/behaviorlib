@@ -30,14 +30,20 @@
 
 #include "../include/behavior_move_forward.h"
 
-namespace behavior_examples
-{
-  BehaviorMoveForward::BehaviorMoveForward() : BehaviorExecutionController() { 
+int main(int argc, char** argv){
+  ros::init(argc, argv, ros::this_node::getName());
+  std::cout << ros::this_node::getName() << std::endl;
+  BehaviorMoveForward behavior;
+  return 0;
+}
+
+  BehaviorMoveForward::BehaviorMoveForward() : BehaviorExecutionManager() { 
     setName("move_forward"); 
     setExecutionGoal(ExecutionGoals::ACHIEVE_GOAL);
   }
 
   BehaviorMoveForward::~BehaviorMoveForward() {}
+
 
   void BehaviorMoveForward::onConfigure(){
     nh = getNodeHandle();
@@ -80,6 +86,3 @@ namespace behavior_examples
   void BehaviorMoveForward::checkProcesses() {
 
   }
-
-}
-PLUGINLIB_EXPORT_CLASS(behavior_examples::BehaviorMoveForward, nodelet::Nodelet)

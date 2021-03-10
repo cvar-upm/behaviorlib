@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(behavior_examples)
+project(examples)
 
 ### Use version 2011 of C++ (c++11). By default ROS uses c++98
 #see: http://stackoverflow.com/questions/10851247/how-to-activate-c-11-in-cmake
@@ -7,31 +7,30 @@ project(behavior_examples)
 add_definitions(-std=c++11)
 
 # Directories definition
-set(BEHAVIOR_EXAMPLES_SOURCE_DIR
+set(EXAMPLES_SOURCE_DIR
   src/source
 )
 
-set(BEHAVIOR_EXAMPLES_INCLUDE_DIR
+set(EXAMPLES_INCLUDE_DIR
   src/include
 )
 
-set(BEHAVIOR_EXAMPLES_HEADER_FILES
-  ${BEHAVIOR_EXAMPLES_INCLUDE_DIR}/behavior_move_forward.h
-  ${BEHAVIOR_EXAMPLES_INCLUDE_DIR}/behavior_move_to_point.h
+set(EXAMPLES_HEADER_FILES
+  ${EXAMPLES_INCLUDE_DIR}/behavior_move_forward.h
+  ${EXAMPLES_INCLUDE_DIR}/behavior_move_to_point.h
 )
 
-set(BEHAVIOR_EXAMPLES_SOURCE_FILES
-  ${BEHAVIOR_EXAMPLES_SOURCE_DIR}/behavior_move_forward.cpp
-  ${BEHAVIOR_EXAMPLES_SOURCE_DIR}/behavior_move_to_point.cpp
+set(EXAMPLES_SOURCE_FILES
+  ${EXAMPLES_SOURCE_DIR}/behavior_move_forward.cpp
+  ${EXAMPLES_SOURCE_DIR}/behavior_move_to_point.cpp
 )
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  nodelet
   std_msgs
-  behaviorlib
+  behavior_execution_manager
   geometry_msgs
   turtlesim
 )
@@ -46,13 +45,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS ${BEHAVIOR_EXAMPLES_INCLUDE_DIR}
+  INCLUDE_DIRS ${EXAMPLES_INCLUDE_DIR}
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS 
-  roscpp 
-  nodelet
+  roscpp
   std_msgs
-  behaviorlib
+  behavior_execution_manager
   geometry_msgs
   turtlesim
   DEPENDS yaml-cpp
@@ -69,13 +67,14 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-add_library(behavior_examples
-  ${BEHAVIOR_EXAMPLES_SOURCE_DIR}/behavior_move_forward.cpp
-  ${BEHAVIOR_EXAMPLES_SOURCE_DIR}/behavior_move_to_point.cpp
-)
-target_link_libraries(behavior_examples ${catkin_LIBRARIES})
-target_link_libraries(behavior_examples yaml-cpp)
+add_executable(BehaviorMoveForward ${EXAMPLES_SOURCE_DIR}/behavior_move_forward.cpp)
+target_link_libraries(BehaviorMoveForward ${catkin_LIBRARIES})
+target_link_libraries(BehaviorMoveForward yaml-cpp)
+
+add_executable(BehaviorMoveToPoint ${EXAMPLES_SOURCE_DIR}/behavior_move_to_point.cpp)
+target_link_libraries(BehaviorMoveToPoint ${catkin_LIBRARIES})
+target_link_libraries(BehaviorMoveToPoint yaml-cpp)
 if(catkin_EXPORTED_LIBRARIES)
-  add_dependencies(behavior_examples ${catkin_EXPORTED_LIBRARIES})
+  add_dependencies(BehaviorMoveForward ${catkin_EXPORTED_LIBRARIES})
+  add_dependencies(BehaviorMoveToPoint ${catkin_EXPORTED_LIBRARIES})
 endif()

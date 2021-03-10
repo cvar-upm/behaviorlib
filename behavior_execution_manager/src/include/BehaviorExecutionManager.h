@@ -1,8 +1,8 @@
 /*!*********************************************************************************
- *  \file       behaviorlib.h
- *  \brief      BehaviorExecutionController definition file.
- *  \authors    Abraham Carrera Groba
- *  \copyright  Copyright (c) 2019 Universidad Politecnica de Madrid
+ *  \file       behavior_execution_manager.h
+ *  \brief      BehaviorExecutionManager definition file.
+ *  \authors    Pablo Santamaria, Martin Molina, Abraham Carrera
+ *  \copyright  Copyright (c) 2021 Universidad Politecnica de Madrid
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,42 +29,41 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef BEHAVIORLIB_H
-#define BEHAVIORLIB_H
+#ifndef BEHAVIORTEST_H
+#define BEHAVIORTEST_H
 
 /* GNU/Linux */
 
 #include <map>
 #include <string>
+#include <chrono>
 
 /* ROS */
 
-#include <nodelet/nodelet.h>
 #include <ros/ros.h>
 
 /* Aerostack Messages */
 
-#include <behaviorlib_msg/BehaviorActivationFinished.h>
-#include <behaviorlib_msg/ActivateBehavior.h>
-#include <behaviorlib_msg/DeactivateBehavior.h>
-#include <behaviorlib_msg/CheckSituation.h>
+#include <behavior_execution_manager_msg/BehaviorActivationFinished.h>
+#include <behavior_execution_manager_msg/ActivateBehavior.h>
+#include <behavior_execution_manager_msg/DeactivateBehavior.h>
+#include <behavior_execution_manager_msg/CheckSituation.h>
 
 
 
 /* Class definition */
-
-class BehaviorExecutionController : public nodelet::Nodelet
+class BehaviorExecutionManager
 {
 
 public:
 
   /* Constructor */
-
-  BehaviorExecutionController();
+  
+  BehaviorExecutionManager();
 
   /*Destructor*/
 
-  ~BehaviorExecutionController();
+  ~BehaviorExecutionManager();
 
 protected:
 
@@ -94,7 +93,7 @@ private:
   
   int maximum_execution_time; /* in seconds */
   
-  behaviorlib_msg::BehaviorActivationFinished::_termination_cause_type termination_cause;
+  behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type termination_cause;
 
 
   enum class States
@@ -121,7 +120,6 @@ private:
 private:
 
   /* Functions to override */
-
   virtual void onConfigure() = 0;
   virtual void onActivate() = 0;
   virtual void onDeactivate() = 0;
@@ -137,22 +135,18 @@ private:
 
 public:
   void configure();
-  void execute(const ros::TimerEvent &);
+  void execute();
   void publishBehaviorActivationFinished();
-
-
-  /* Nodelet functions */
-
-  void onInit();
+  void start();
 
   /* Callbacks */
 
-  bool activateServiceCallback(behaviorlib_msg::ActivateBehavior::Request &,
-                                behaviorlib_msg::ActivateBehavior::Response &);
-  bool deactivateServiceCallback(behaviorlib_msg::DeactivateBehavior::Request &,
-                                  behaviorlib_msg::DeactivateBehavior::Response &);
-  bool checkSituationServiceCallback(behaviorlib_msg::CheckSituation::Request &,
-                                         behaviorlib_msg::CheckSituation::Response &);
+  bool activateServiceCallback(behavior_execution_manager_msg::ActivateBehavior::Request &,
+                                behavior_execution_manager_msg::ActivateBehavior::Response &);
+  bool deactivateServiceCallback(behavior_execution_manager_msg::DeactivateBehavior::Request &,
+                                  behavior_execution_manager_msg::DeactivateBehavior::Response &);
+  bool checkSituationServiceCallback(behavior_execution_manager_msg::CheckSituation::Request &,
+                                         behavior_execution_manager_msg::CheckSituation::Response &);
   void notifyTimeout(const ros::TimerEvent &);
 
 
@@ -164,7 +158,7 @@ protected:
   std::string getParameters();
   std::string getNamespace();
   int getMaximumExecutionTime();
-  behaviorlib_msg::BehaviorActivationFinished::_termination_cause_type getTerminationCause();
+  behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type getTerminationCause();
   ros::NodeHandle getNodeHandle();
 
   /* Setters */
@@ -173,7 +167,7 @@ protected:
   void setParameters(std::string parameters);
   void setErrorMessage(std::string error_message);
   void setMaximumExecutionTime(int maximum_execution_time);
-  void setTerminationCause(behaviorlib_msg::BehaviorActivationFinished::_termination_cause_type);
+  void setTerminationCause(behavior_execution_manager_msg::BehaviorActivationFinished::_termination_cause_type);
   void setExecutionGoal(ExecutionGoals execution_goal);
 
 };

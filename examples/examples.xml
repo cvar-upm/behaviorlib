@@ -1,0 +1,14 @@
+<library path="lib/libexamples">
+	<class name="examples/BehaviorMoveForward" type="examples::BehaviorMoveForward"
+		base_class_type="behavior_execution_manager::BehaviorExecutionManager">
+		<description>
+			BehaviorMoveForward.
+		</description>
+	</class>
+	<class name="examples/BehaviorMoveToPoint" type="examples::BehaviorMoveToPoint"
+		base_class_type="behavior_execution_manager::BehaviorExecutionManager">
+		<description>
+			BehaviorMoveToPoint.
+		</description>
+	</class>
+</library>

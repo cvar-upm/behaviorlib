@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(behaviorlib)
+project(behavior_execution_manager)
 
 ### Use version 2011 of C++ (c++11). By default ROS uses c++98
 add_definitions(-std=c++11)
@@ -15,11 +15,11 @@ set(BEHAVIORLIB_INCLUDE_DIR
 
 # Files declaration
 set(BEHAVIORLIB_SOURCE_FILES
-  ${BEHAVIORLIB_SOURCE_DIR}/behaviorlib.cpp
+  ${BEHAVIORLIB_SOURCE_DIR}/BehaviorExecutionManager.cpp
 )
 
 set(BEHAVIORLIB_HEADER_FILES
-  ${BEHAVIORLIB_INCLUDE_DIR}/behaviorlib.h
+  ${BEHAVIORLIB_INCLUDE_DIR}/BehaviorExecutionManager.h
 )
 
 ### Find catkin macros and libraries
@@ -29,7 +29,7 @@ find_package(catkin REQUIRED
   COMPONENTS
   roscpp
   std_msgs
-  behaviorlib_msg
+  behavior_execution_manager_msg
 )
 
 ###################################
@@ -41,11 +41,11 @@ find_package(catkin REQUIRED
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS ${BEHAVIORLIB_INCLUDE_DIR}
-  LIBRARIES behaviorlib
+  LIBRARIES behavior_execution_manager
   CATKIN_DEPENDS
   roscpp
   std_msgs
-  behaviorlib_msg
+  behavior_execution_manager_msg
 )
 
 ###########
@@ -59,7 +59,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(behaviorlib ${BEHAVIORLIB_SOURCE_FILES} ${BEHAVIORLIB_HEADER_FILES})
-add_dependencies(behaviorlib ${catkin_EXPORTED_TARGETS})
-target_link_libraries(behaviorlib ${catkin_LIBRARIES})
+add_library(behavior_execution_manager ${BEHAVIORLIB_SOURCE_FILES} ${BEHAVIORLIB_HEADER_FILES})
+add_dependencies(behavior_execution_manager ${catkin_EXPORTED_TARGETS})
+target_link_libraries(behavior_execution_manager ${catkin_LIBRARIES})
 
