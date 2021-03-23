@@ -31,28 +31,25 @@
 
 #include <BehaviorExecutionManager.h>
 /* Constructor */
-BehaviorExecutionManager::BehaviorExecutionManager()
-{
+BehaviorExecutionManager::BehaviorExecutionManager(){
   execution_goal = ExecutionGoals::ACHIEVE_GOAL;
   state = States::UNCONFIGURED;
 }
 
 /* Destructor */
-BehaviorExecutionManager::~BehaviorExecutionManager() {}
+BehaviorExecutionManager::~BehaviorExecutionManager(){}
 
 void BehaviorExecutionManager::start(){
   configure();
   ros::Rate rate(EXECUTION_FREQUENCY);
-  while (ros::ok())
-  {
+  while (ros::ok()){
     ros::spinOnce();
     execute();
     rate.sleep();
   }
 }
 
-void BehaviorExecutionManager::configure()
-{
+void BehaviorExecutionManager::configure(){
   ros::NodeHandle private_nh("~");
   private_nh.param<std::string>("namespace", nspace, "drone1");
   private_nh.param<double>("frecuency", EXECUTION_FREQUENCY, 100.0);
@@ -60,86 +57,75 @@ void BehaviorExecutionManager::configure()
   private_nh.param<std::string>("deactivate_behavior_srv", deactivate_behavior_str, "deactivate_behavior");
   private_nh.param<std::string>("check_activation_conditions_srv", check_activation_conditions_str,
                                 "check_activation_conditions");
+  private_nh.param<std::string>("check_activation_srv", check_activation_str,
+                                "check_activation");
   private_nh.param<std::string>("activation_finished_topic", activation_finished_str, "behavior_activation_finished");
   private_nh.getParam("behavior_system", behavior_system);
 
   onConfigure();
-  if (behavior_system!="") {
+  if (behavior_system!=""){
   activate_behavior_server_srv =
       node_handle.advertiseService("/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/" + activate_behavior_str,
                                    &BehaviorExecutionManager::activateServiceCallback, this);
+
   deactivate_behavior_server_srv =
       node_handle.advertiseService("/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/" + deactivate_behavior_str,
                                    &BehaviorExecutionManager::deactivateServiceCallback, this);
+
   check_situation_server_srv =
       node_handle.advertiseService("/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/" + check_activation_conditions_str,
                                    &BehaviorExecutionManager::checkSituationServiceCallback, this);
   }
-  else {
-   
+  else{
     activate_behavior_server_srv =
       node_handle.advertiseService("/"+nspace+"/behavior_"+getName() + "/" + activate_behavior_str,
                                    &BehaviorExecutionManager::activateServiceCallback, this);
+
     deactivate_behavior_server_srv =
       node_handle.advertiseService("/"+nspace+"/behavior_"+getName() + "/" + deactivate_behavior_str,
                                    &BehaviorExecutionManager::deactivateServiceCallback, this);
-    check_situation_server_srv =
+
+    check_activation_srv =
       node_handle.advertiseService("/"+nspace+"/behavior_"+getName() + "/" + check_activation_conditions_str,
-                                   &BehaviorExecutionManager::checkSituationServiceCallback, this);
+                                   &BehaviorExecutionManager::checkActivation, this);
 
   }
-  activation_finished_pub = node_handle.advertise<behavior_execution_manager_msgs::BehaviorActivationFinished>(
-      "/" + nspace + "/" + activation_finished_str, 100);
+  activation_finished_pub =
+    node_handle.advertise<behavior_execution_manager_msgs::BehaviorActivationFinished>("/" + nspace + "/" + activation_finished_str, 100);
+
   state = States::INACTIVE;
 }
 
-void BehaviorExecutionManager::execute()
-{ 
-  if (state == States::ACTIVE)
-  {
-    if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT)
-    {
-      if (execution_goal == ExecutionGoals::ACHIEVE_GOAL)
-      {
+void BehaviorExecutionManager::execute(){ 
+  if (state == States::ACTIVE){
+    if(!checkSituation()){
+      termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::SITUATION_CHANGE;
+    }
+    else if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT){
+      if (execution_goal == ExecutionGoals::ACHIEVE_GOAL){
         checkGoal();
       }
-      if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED)
-      {
+      if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED){
         checkProgress();
       }
-      else if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::WRONG_PROGRESS)
-           {
-               checkProcesses();
-           }
+      else if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::WRONG_PROGRESS){
+        checkProcesses();
+      }
     }
-
-   
-   if (termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT  || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::WRONG_PROGRESS || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::PROCESS_FAILURE)
-    {
-
+    if (termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT  || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::GOAL_ACHIEVED || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::WRONG_PROGRESS || termination_cause == behavior_execution_manager_msgs::BehaviorActivationFinished::PROCESS_FAILURE){
       publishBehaviorActivationFinished();
-
       onDeactivate();
-
       state = States::INACTIVE;
-
       termination_cause = 0;
       timer.stop(); 
-
-
     }
-
-   else 
-   {
+    else{
       onExecute();
-   }
-  
- }
-
+    }
+  }
 }
 
-void BehaviorExecutionManager::publishBehaviorActivationFinished()
-{ 
+void BehaviorExecutionManager::publishBehaviorActivationFinished(){ 
   behavior_execution_manager_msgs::BehaviorActivationFinished activation_finished_msg;
   std::string behavior_name = getName();
   std::transform(behavior_name.begin(), behavior_name.end(), behavior_name.begin(), ::toupper);
@@ -152,90 +138,76 @@ void BehaviorExecutionManager::publishBehaviorActivationFinished()
 
 /* Getters */
 
-behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type BehaviorExecutionManager::getTerminationCause()
-{
+behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type BehaviorExecutionManager::getTerminationCause(){
   return termination_cause;
 }
 
-std::string BehaviorExecutionManager::getName() { 
+std::string BehaviorExecutionManager::getName(){ 
   return name; 
 }
 
-std::string BehaviorExecutionManager::getParameters() { 
+std::string BehaviorExecutionManager::getParameters(){ 
   return parameters; 
 }
 
-std::string BehaviorExecutionManager::getNamespace() { 
+std::string BehaviorExecutionManager::getNamespace(){ 
   return nspace; 
 }
 
 
-int BehaviorExecutionManager::getMaximumExecutionTime() { 
+int BehaviorExecutionManager::getMaximumExecutionTime(){ 
   return  maximum_execution_time;
 }
 
-ros::NodeHandle BehaviorExecutionManager::getNodeHandle() { 
+ros::NodeHandle BehaviorExecutionManager::getNodeHandle(){ 
   return node_handle; 
 }
 
 /* Setters */
 
-void BehaviorExecutionManager::setTerminationCause(behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type termination_cause)
-{
+void BehaviorExecutionManager::setTerminationCause(behavior_execution_manager_msgs::BehaviorActivationFinished::_termination_cause_type termination_cause){
   this->termination_cause = termination_cause;
 }
 
-void BehaviorExecutionManager::setName(std::string name) 
-{ 
+void BehaviorExecutionManager::setName(std::string name){ 
   this->name = name; 
 }
 
-void BehaviorExecutionManager::setParameters(std::string parameters) 
-{ 
+void BehaviorExecutionManager::setParameters(std::string parameters){ 
   this->parameters = parameters; 
 }
 
-void BehaviorExecutionManager::setErrorMessage(std::string error_message) 
-{ 
+void BehaviorExecutionManager::setErrorMessage(std::string error_message){ 
   this->error_message = error_message; 
 }
 
-void BehaviorExecutionManager::setMaximumExecutionTime(int maximum_execution_time) 
-{ 
+void BehaviorExecutionManager::setMaximumExecutionTime(int maximum_execution_time){ 
   this->maximum_execution_time = maximum_execution_time; 
 }
 
-void BehaviorExecutionManager::setExecutionGoal(ExecutionGoals execution_goal) 
-{ 
+void BehaviorExecutionManager::setExecutionGoal(ExecutionGoals execution_goal){ 
   this->execution_goal = execution_goal; 
 }
 
 /* Callbacks */
 
 bool BehaviorExecutionManager::activateServiceCallback(behavior_execution_manager_msgs::ActivateBehavior::Request &req,
-                                                           behavior_execution_manager_msgs::ActivateBehavior::Response &resp)
-{  //unsigned long init=ros::Time::now().toNSec();
-    if (state == States::INACTIVE)
-    { 
+                                                       behavior_execution_manager_msgs::ActivateBehavior::Response &resp){
+    //unsigned long init=ros::Time::now().toNSec();
+    if (state == States::INACTIVE){ 
       state = States::ACTIVE;
       setParameters(req.arguments);
       setMaximumExecutionTime(req.timeout);
 
       onActivate();
 
-      if (execution_goal == ExecutionGoals::ACHIEVE_GOAL)
-      { 
+      if (execution_goal == ExecutionGoals::ACHIEVE_GOAL){ 
         timer = node_handle.createTimer(ros::Duration(getMaximumExecutionTime()), &BehaviorExecutionManager::notifyTimeout, this);
       }
-     
       resp.ack = true;
-      
     }
-
-   else 
-   {
+   else{
     ROS_WARN("Node %s received an activation call when it was already active", ros::this_node::getName().c_str());
-
     resp.ack = false;
     resp.error_message = error_message;
    }
@@ -246,38 +218,40 @@ bool BehaviorExecutionManager::activateServiceCallback(behavior_execution_manage
 }
 
 bool BehaviorExecutionManager::deactivateServiceCallback(behavior_execution_manager_msgs::DeactivateBehavior::Request &req,
-                                                             behavior_execution_manager_msgs::DeactivateBehavior::Response &resp)
-{
-  if (state == States::ACTIVE)
-  {
+                                                             behavior_execution_manager_msgs::DeactivateBehavior::Response &resp){
+  if (state == States::ACTIVE){
     state = States::INACTIVE;
     termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::INTERRUPTED;
     publishBehaviorActivationFinished();
+    active = false;
     onDeactivate();
     resp.ack = true;
   }
-  else
-  {
-  ROS_WARN("Node %s received a deactivation call when it was already deactivated", ros::this_node::getName().c_str());
-  resp.ack = false;
-  error_message = "Behavior [" + ros::this_node::getName() + "] is not active";
-  resp.error_message = error_message;
+  else{
+    ROS_WARN("Node %s received a deactivation call when it was already deactivated", ros::this_node::getName().c_str());
+    resp.ack = false;
+    error_message = "Behavior [" + ros::this_node::getName() + "] is not active";
+    resp.error_message = error_message;
   }
-
-
   return resp.ack;
 }
 
-bool BehaviorExecutionManager::checkSituationServiceCallback(behavior_execution_manager_msgs::CheckSituation::Request &req, behavior_execution_manager_msgs::CheckSituation::Response &resp)
-{
+bool BehaviorExecutionManager::checkSituationServiceCallback(behavior_execution_manager_msgs::CheckSituation::Request &req, behavior_execution_manager_msgs::CheckSituation::Response &resp){
   resp.situation_occurs = checkSituation();
   resp.error_message = error_message;
   return resp.situation_occurs;
 }
 
-void BehaviorExecutionManager::notifyTimeout(const ros::TimerEvent &timer_event) 
-{  if (state == States::ACTIVE)
-  {
-  termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT;
+void BehaviorExecutionManager::notifyTimeout(const ros::TimerEvent &timer_event){
+  if (state == States::ACTIVE){
+    termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT;
   }
+}
+
+
+//Herencia
+bool BehaviorExecutionManager::checkActivation(behavior_execution_manager_msgs::CheckActivation::Request &req, behavior_execution_manager_msgs::CheckActivation::Response &resp){
+  resp.is_active = active;
+  resp.parameters = parameters;
+  return active;
 }

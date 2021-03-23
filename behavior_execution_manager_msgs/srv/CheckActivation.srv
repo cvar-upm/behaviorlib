@@ -1,0 +1,4 @@
+# This service checks whether the behavior is active (and the parameters it was activated with) or not
+---
+bool is_active             # If this value is true, the behavior is active
+string parameters          # If the above variable is true, this variable includes its parameters (if not empty)

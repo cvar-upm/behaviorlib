@@ -48,6 +48,7 @@
 #include <behavior_execution_manager_msgs/ActivateBehavior.h>
 #include <behavior_execution_manager_msgs/DeactivateBehavior.h>
 #include <behavior_execution_manager_msgs/CheckSituation.h>
+#include <behavior_execution_manager_msgs/CheckActivation.h>
 
 
 
@@ -80,6 +81,7 @@ private:
   
   ros::NodeHandle node_handle;
 
+  bool active = false;
   std::string name;
   std::string nspace;
   std::string parameters;
@@ -89,6 +91,7 @@ private:
   std::string activate_behavior_str;
   std::string deactivate_behavior_str;
   std::string check_activation_conditions_str;
+  std::string check_activation_str;
   std::string activation_finished_str;
   
   int maximum_execution_time; /* in seconds */
@@ -109,6 +112,7 @@ private:
   ros::ServiceServer activate_behavior_server_srv;
   ros::ServiceServer deactivate_behavior_server_srv;
   ros::ServiceServer check_situation_server_srv;
+  ros::ServiceServer check_activation_srv;
 
   ros::Publisher activation_finished_pub;
 
@@ -129,9 +133,6 @@ private:
   virtual void checkProgress() = 0;
   virtual void checkProcesses() = 0;
 
-  /* Class functions */
-
-
 
 public:
   void configure();
@@ -149,6 +150,9 @@ public:
                                          behavior_execution_manager_msgs::CheckSituation::Response &);
   void notifyTimeout(const ros::TimerEvent &);
 
+  /* Functions to inherit */
+  bool checkActivation(behavior_execution_manager_msgs::CheckActivation::Request &,
+                                         behavior_execution_manager_msgs::CheckActivation::Response &);
 
 protected:
 

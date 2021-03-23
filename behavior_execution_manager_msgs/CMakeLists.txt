@@ -17,6 +17,7 @@ add_service_files(
   FILES
   ActivateBehavior.srv
   CheckSituation.srv
+  CheckActivation.srv
   DeactivateBehavior.srv
 )
 
