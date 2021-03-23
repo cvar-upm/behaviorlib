@@ -98,10 +98,10 @@ void BehaviorExecutionManager::configure(){
 
 void BehaviorExecutionManager::execute(){ 
   if (state == States::ACTIVE){
-    if(!checkSituation()){
+    /*if(!checkSituation()){
       termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::SITUATION_CHANGE;
     }
-    else if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT){
+    else*/ if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT){
       if (execution_goal == ExecutionGoals::ACHIEVE_GOAL){
         checkGoal();
       }
