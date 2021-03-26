@@ -55,41 +55,34 @@ void BehaviorExecutionManager::configure(){
   private_nh.param<double>("frecuency", EXECUTION_FREQUENCY, 100.0);
   private_nh.param<std::string>("activate_behavior_srv", activate_behavior_str, "activate_behavior");
   private_nh.param<std::string>("deactivate_behavior_srv", deactivate_behavior_str, "deactivate_behavior");
-  private_nh.param<std::string>("check_activation_conditions_srv", check_activation_conditions_str,
-                                "check_activation_conditions");
-  private_nh.param<std::string>("check_activation_srv", check_activation_str,
-                                "check_activation");
+  private_nh.param<std::string>("check_activation_conditions_srv", check_activation_conditions_str,"check_activation_conditions");
+  private_nh.param<std::string>("check_activation_srv", check_activation_str,"check_activation");
   private_nh.param<std::string>("activation_finished_topic", activation_finished_str, "behavior_activation_finished");
   private_nh.getParam("behavior_system", behavior_system);
 
   onConfigure();
+  std::string completeNameSpace = "/"+nspace+"/behavior_"+getName() + "/";
   if (behavior_system!=""){
+    completeNameSpace = "/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/";
+  }
   activate_behavior_server_srv =
-      node_handle.advertiseService("/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/" + activate_behavior_str,
+      node_handle.advertiseService(completeNameSpace + activate_behavior_str,
                                    &BehaviorExecutionManager::activateServiceCallback, this);
 
   deactivate_behavior_server_srv =
-      node_handle.advertiseService("/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/" + deactivate_behavior_str,
+      node_handle.advertiseService(completeNameSpace + deactivate_behavior_str,
                                    &BehaviorExecutionManager::deactivateServiceCallback, this);
 
   check_situation_server_srv =
-      node_handle.advertiseService("/"+nspace+"/"+behavior_system+"/behavior_"+getName() + "/" + check_activation_conditions_str,
+      node_handle.advertiseService(completeNameSpace + check_activation_conditions_str,
                                    &BehaviorExecutionManager::checkSituationServiceCallback, this);
-  }
-  else{
-    activate_behavior_server_srv =
-      node_handle.advertiseService("/"+nspace+"/behavior_"+getName() + "/" + activate_behavior_str,
-                                   &BehaviorExecutionManager::activateServiceCallback, this);
 
-    deactivate_behavior_server_srv =
-      node_handle.advertiseService("/"+nspace+"/behavior_"+getName() + "/" + deactivate_behavior_str,
-                                   &BehaviorExecutionManager::deactivateServiceCallback, this);
-
-    check_activation_srv =
-      node_handle.advertiseService("/"+nspace+"/behavior_"+getName() + "/" + check_activation_conditions_str,
+  check_activation_srv =
+      node_handle.advertiseService(completeNameSpace + check_activation_str,
                                    &BehaviorExecutionManager::checkActivation, this);
 
-  }
+  std::cout<<"abierto: "<<"/"<<completeNameSpace << check_activation_str<<std::endl;
+
   activation_finished_pub =
     node_handle.advertise<behavior_execution_manager_msgs::BehaviorActivationFinished>("/" + nspace + "/" + activation_finished_str, 100);
 
@@ -98,10 +91,10 @@ void BehaviorExecutionManager::configure(){
 
 void BehaviorExecutionManager::execute(){ 
   if (state == States::ACTIVE){
-    /*if(!checkSituation()){
+    if(!checkSituation()){
       termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::SITUATION_CHANGE;
     }
-    else*/ if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT){
+    else if (termination_cause != behavior_execution_manager_msgs::BehaviorActivationFinished::TIME_OUT){
       if (execution_goal == ExecutionGoals::ACHIEVE_GOAL){
         checkGoal();
       }
@@ -223,7 +216,6 @@ bool BehaviorExecutionManager::deactivateServiceCallback(behavior_execution_mana
     state = States::INACTIVE;
     termination_cause = behavior_execution_manager_msgs::BehaviorActivationFinished::INTERRUPTED;
     publishBehaviorActivationFinished();
-    active = false;
     onDeactivate();
     resp.ack = true;
   }
@@ -251,7 +243,7 @@ void BehaviorExecutionManager::notifyTimeout(const ros::TimerEvent &timer_event)
 
 //Herencia
 bool BehaviorExecutionManager::checkActivation(behavior_execution_manager_msgs::CheckActivation::Request &req, behavior_execution_manager_msgs::CheckActivation::Response &resp){
-  resp.is_active = active;
+  resp.is_active = (state == States::ACTIVE);
   resp.parameters = parameters;
-  return active;
+  return resp.is_active;
 }

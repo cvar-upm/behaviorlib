@@ -81,7 +81,6 @@ private:
   
   ros::NodeHandle node_handle;
 
-  bool active = false;
   std::string name;
   std::string nspace;
   std::string parameters;
