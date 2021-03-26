@@ -2,8 +2,8 @@
 
 Software library for programming robot behaviors.
 
-<a href="https://github.com/cvar-upm/behaviorlib/raw/main/doc/ros_node.png">
-       <img src="https://github.com/cvar-upm/behaviorlib/raw/main/doc/ros_node.png" width=400>
+<a href="https://github.com/cvar-upm/behaviorlib/raw/master/doc/ros_node.png">
+       <img src="https://github.com/cvar-upm/behaviorlib/raw/master/doc/ros_node.png" width=400>
    </a>
 
 
