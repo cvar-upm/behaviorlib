@@ -1,0 +1,14 @@
+<!-- Launches: alphanumeric_behavior_viewer -->
+<launch>
+	<arg name="drone_id_namespace"  default="drone1" />
+	<arg name="my_stack_directory" 	default="$(env AEROSTACK_STACK)" />
+	<arg name = "config_file"	default ="keyboard_behavior_activation_config.yaml" />
+
+	<group ns="$(arg drone_id_namespace)">
+		<node name="alphanumeric_behavior_viewer" pkg="alphanumeric_behavior_viewer" type="alphanumeric_behavior_viewer" output="screen">
+			<param name="drone_id_namespace" value="$(arg drone_id_namespace)" type="string"/>
+			<param name="stackPath" value="$(arg my_stack_directory)" type="string"/>
+			<param name="config_file" value="$(arg config_file)" type="string"/>
+		</node>
+	</group>
+</launch>

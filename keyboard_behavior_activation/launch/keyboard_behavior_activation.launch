@@ -1,0 +1,44 @@
+<!-- Launches: Keyboard_behavior_activation -->
+<launch>
+	<arg name="drone_id_namespace"  default="drone1" />
+	<arg name="my_stack_directory" 	default="$(env AEROSTACK_STACK)" />
+
+	<arg name="flight_action_topic_name" 			default="actuator_command/flight_action" />
+	<arg name="speed_ref_topic_name" 	        	default="motion_reference/speed" />
+	<arg name="pose_ref_topic_name" 				default="motion_reference/pose" />
+	<arg name="self_pose_topic_name" 				default="self_localization/pose" />
+	<arg name="assumed_control_mode_topic_name" 	default="motion_reference/assumed_control_mode" />
+	<arg name="set_control_mode_service_name" 		default="set_control_mode" />
+    <arg name="command_pitch_roll_topic_name"     	default="actuator_command/roll_pitch" />
+	<arg name="self_speed_topic_name" 			default="self_localization/speed" />
+	<arg name = "config_file"				default ="keyboard_behavior_activation_config.yaml" />
+
+	<!--Opened window topic-->
+    <arg name="window_opened" default="window_opened"/>
+
+    <!--Closed window topic-->
+        <arg name="closed_opened" default="closed_opened"/>
+
+	<group ns="$(arg drone_id_namespace)">
+		<node name="keyboard_behavior_activation" pkg="keyboard_behavior_activation" type="keyboard_behavior_activation" output="screen">
+			<param name="drone_id_namespace" value="$(arg drone_id_namespace)" type="string"/>
+			<param name="stackPath" value="$(arg my_stack_directory)" type="string"/>
+			<param name="flight_action_topic_name" value="$(arg flight_action_topic_name)" type="string"/>
+			<param name="speed_ref_topic_name" value="$(arg speed_ref_topic_name)" type="string"/>
+			<param name="pose_ref_topic_name" value="$(arg pose_ref_topic_name)" type="string"/>
+			<param name="self_pose_topic_name" value="$(arg self_pose_topic_name)" type="string"/>
+			<param name="assumed_control_mode_topic_name" value="$(arg assumed_control_mode_topic_name)" type="string"/>
+			<param name="set_control_mode_service_name" value="$(arg set_control_mode_service_name)" type="string"/>
+
+			<param name="command_pitch_roll_topic_name" value="$(arg command_pitch_roll_topic_name)" type="string"/>
+			<param name="self_speed_topic_name" value="$(arg self_speed_topic_name)" type="string"/>
+			<param name="config_file" value="$(arg config_file)" type="string"/>	
+		</node>
+
+		<!--Opened window topic-->
+			<param name="window_opened" value="$(arg window_opened)" />
+
+		<!--Closed window topic-->
+			<param name="closed_opened" value="$(arg closed_opened)" />
+	</group>
+</launch>
