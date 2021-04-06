@@ -1,0 +1,81 @@
+KEEP_MOVING_WITH_PID_CONTROL:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_keep_moving_with_pid_control  
+    parameters: "direction: FORWARD & speed: 0.4"
+    key: key_up
+    deactivation: [key_down, key_left, key_right, h, r]
+
+KEEP_MOVING_WITH_PID_CONTROL:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_keep_moving_with_pid_control  
+    parameters: "direction: BACKWARD & speed: 0.4"
+    key: key_down
+    deactivation: [key_up, key_left, key_right, h, r]
+
+KEEP_MOVING_WITH_PID_CONTROL:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_keep_moving_with_pid_control  
+    parameters: "direction: LEFT & speed: 0.4"
+    key: key_left
+    deactivation: [key_up, key_down, key_right, h, r]
+
+KEEP_MOVING_WITH_PID_CONTROL:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_keep_moving_with_pid_control  
+    parameters: "direction: RIGHT & speed: 0.4"
+    key: key_right
+    deactivation: [key_up, key_down, key_left, h, r]
+
+TAKE_OFF:
+    package: basic_quadrotor_behaviors
+    node: behavior_take_off
+    parameters: ""
+    key: t    
+    deactivation: []
+
+LAND:
+    package: basic_quadrotor_behaviors
+    node: behavior_land
+    parameters: ""
+    key: l
+    deactivation: [key_down, key_up, key_left, key_right, h, r]
+
+ROTATE:
+    package: quadrotor_motion_with_pid_control
+    node: rotate_with_pid_control
+    parameters: "angle: 10"
+    key: r 
+    deactivation: [key_up, key_down, key_right, key_left, h]
+
+HOVER:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_keep_hovering_with_pid_control
+    parameters: ""
+    key: h       
+    deactivation: [key_down, key_up, key_left, key_right, r]
+
+SELF_LOCALIZE_WITH_GROUND_TRUTH:
+    package: basic_quadrotor_behaviors
+    node: behavior_self_localize_with_ground_truth
+    parameters: ""
+    key: s
+    deactivation: []      
+
+QUADROTOR_PID_MOTION_CONTROL:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_quadrotor_pid_motion_control
+    parameters: ""
+    key: v
+    deactivation: []
+
+QUADROTOR_PID_THRUST_CONTROL:
+    package: quadrotor_motion_with_pid_control
+    node: behavior_quadrotor_pid_thrust_control
+    parameters: ""
+    key: v
+    deactivation: []
+
+
+
+
+
