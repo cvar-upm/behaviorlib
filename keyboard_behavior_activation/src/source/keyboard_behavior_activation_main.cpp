@@ -46,7 +46,6 @@ int main(int argc, char** argv){
   std::setlocale(LC_NUMERIC, "C");
   initscr();
   start_color();
-  scrollok(stdscr, TRUE);
   use_default_colors();  
   curs_set(0);
   noecho();
@@ -79,6 +78,7 @@ int main(int argc, char** argv){
     parameters.push_back(list["parameters"].as<std::string>());
     packages.push_back(list["package"].as<std::string>());
     mappings.push_back(list["key"].as<std::string>());
+    deactivations.push_back(list["deactivation"].as<std::vector <std::string>>());
 
   } 
   printoutControls();
@@ -91,26 +91,49 @@ int main(int argc, char** argv){
     int uppercase = 0;
     //Read command
 
-    command = getch();
-    if (isupper(command)){
-      uppercase = 1;
-      command = command + 32;
-    }
+    command = getch(); 
     std::string s(1, command);
+    switch (command){
+      case key_up:
+        s = "key_up";
+
+        break;
+      case key_down:
+        s = "key_down";
+
+        break;
+      case key_left:
+        s = "key_left";
+
+        break; 
+      case key_right:
+        s = "key_right";
+        break;
+
+      default:
+        if (isupper(command)){
+          uppercase = 1;
+          command = command + 32;
+          s = command;
+        }
+    }
     
     move (pointer_c, 0);
     auto it = find(mappings.begin(), mappings.end(), s);
-    if (uppercase == 1)
+    if (uppercase == 1){
       command = command - 32;
       s = command;
       command = command + 32;
+    }
+
     // If element was found
+
     while (it != mappings.end()) 
     {
       int index = it - mappings.begin();
       std::string behavior_path;
       std::string check_path;
-      move (pointer_c, 0);
+      move (pointer_c, 0);clrtoeol();
       printw("Last key pressed: ");
       printw(s.c_str());
       move (pointer_c +2, 0);
@@ -123,32 +146,44 @@ int main(int argc, char** argv){
         behavior_execution_manager_msgs::CheckSituation check_situation_msg;
         check_situation_srv.call(check_situation_msg);
         if (check_situation_msg.response.situation_occurs){
+          std::string deactivate_behavior;
+          for (int i = 0; i < deactivations.at(index).size(); i++){
+            deactivate_behavior = deactivations.at(index).at(i);
+            auto it2 = find(mappings.begin(), mappings.end(), deactivate_behavior);
+            int j = 0;
+            while (it2 != mappings.end()){
+              j = it2 - mappings.begin();
+              behavior_path =  "/" + drone_id_namespace + "/" + packages.at(j) + "/" + names.at(j) + "/deactivate_behavior";
+              deactivate_behavior_srv = n.serviceClient<behavior_execution_manager_msgs::DeactivateBehavior>(behavior_path);
+              behavior_execution_manager_msgs::DeactivateBehavior deactivate_behavior_msg;
+              deactivate_behavior_srv.call(deactivate_behavior_msg);
+              it2++;
+              it2 = find(it2, mappings.end(), deactivate_behavior);
+            }          
+          }
+          
           behavior_execution_manager_msgs::ActivateBehavior activate_behavior_msg;
           activate_behavior_msg.request.arguments = parameters.at(index);
           activate_behavior_msg.request.timeout = 1000;
           manage_behavior_srv.call(activate_behavior_msg);       
 
           if(!activate_behavior_msg.response.ack){
-            move (pointer_c, 0);
+            move (pointer_c, 0);clrtoeol();
             printw("Last key pressed: ");
             printw(s.c_str());                    
             attron(COLOR_PAIR(4));
-            pointer_c = pointer_c +2;
-            move (pointer_c, 0);
+            move (pointer_c +2, 0);clrtoeol();
             printw("Error: Activation failure of behavior "); printw(behaviors.at(index).c_str()); attroff(COLOR_PAIR(4));
-            pointer_c = pointer_c -2;
             break;                    
           }
         }
         else {
-            move (pointer_c, 0);
+            move (pointer_c, 0);clrtoeol();
             printw("Last key pressed: ");
             printw(s.c_str());                    
             attron(COLOR_PAIR(4));
-            pointer_c = pointer_c +2;
-            move (pointer_c, 0);          
-            printw("Error: Unsatisfied pre-conditions of behavior "); printw(behaviors.at(index).c_str()); attroff(COLOR_PAIR(4));
-            pointer_c = pointer_c -2;            
+            move (pointer_c +2, 0);clrtoeol();          
+            printw("Error: Unsatisfied pre-conditions of behavior "); printw(behaviors.at(index).c_str()); attroff(COLOR_PAIR(4));            
             break;
         }       
       }
@@ -159,10 +194,11 @@ int main(int argc, char** argv){
         manage_behavior_srv.call(deactivate_behavior_msg);     
 
         if(!deactivate_behavior_msg.response.ack){
-          move (pointer_c, 0);
+          move (pointer_c, 0);clrtoeol();
           printw("Last key pressed: ");
-          printw(s.c_str()); 
-          attron(COLOR_PAIR(4)); printw(" Error: Deactivation failure of behavior "); printw(behaviors.at(index).c_str()); attroff(COLOR_PAIR(4));
+          printw(s.c_str());
+          move (pointer_c +2, 0);clrtoeol();
+          attron(COLOR_PAIR(4)); printw("Error: Deactivation failure of behavior "); printw(behaviors.at(index).c_str()); attroff(COLOR_PAIR(4));
           break;
         }
       }
@@ -197,48 +233,41 @@ void printoutControls(){
 
     move(pointer_c,pointer_y);clrtoeol();
     std::string map = *it;
-    if (map == "ASCII_KEY_UP"){
+    std::string key = map;
+    if (map == "key_up"){
       map = "\u2191";
     }
-    else if (map == "ASCII_KEY_DOWN"){
+    else if (map == "key_down"){
       map = "\u2193";
     }
-    else if (map == "ASCII_KEY_RIGHT"){
+    else if (map == "key_right"){
       map = "\u2190";
     }
-    else if (map == "ASCII_KEY_LEFT"){
+    else if (map == "key_left"){
       map = "\u2192";
     }
     
-    if (find(key_printed.begin(), key_printed.end(), map.c_str()) == key_printed.end()){
+    if (find(key_printed.begin(), key_printed.end(), key.c_str()) == key_printed.end()){
       attron(COLOR_PAIR(5));printw(map.c_str()); attroff(COLOR_PAIR(5)); 
       pointer_y = pointer_y + 3; 
       move(pointer_c,pointer_y++);
       printw("{");
            
       for (int i = 0; i<j; i++){
-        if (map.c_str() == mappings.at(i)){
+        if (key.c_str() == mappings.at(i)){
           move(pointer_c++,pointer_y);
           printw(behaviors.at(i).c_str());
-          for (int k = (j-i)-1; k>i; k--){
-            if (map.c_str() == mappings.at(k)){
-              if (parameters.at(i) == ""){
-              printw(",");
-              }
-              else {
-              printw(" ");
-              }
-              if (parameters.at(i) != ""){
-                printw(",");
-              }
-              break;
-            }
-          }
+          
           if (parameters.at(i) != ""){
             printw(" ");
           }          
           printw(parameters.at(i).c_str());
-                     
+          for (int k = j-1; k>i; k--){
+            if (key.c_str() == mappings.at(k)){
+              printw(",");
+              break;
+            }
+          }                     
           std::string str = "& ";
           std::string str2 = "\n";
           size_t found = parameters.at(i).find(str);
@@ -256,7 +285,7 @@ void printoutControls(){
       }
       //move(--pointer_c,pointer_y);clrtoeol();
       
-      key_printed.push_back(map.c_str());
+      key_printed.push_back(key.c_str());
     }  
   }
   pointer_c = pointer_c + 1;    

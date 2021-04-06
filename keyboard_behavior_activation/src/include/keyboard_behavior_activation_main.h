@@ -49,16 +49,17 @@
 #include "yaml-cpp/yaml.h"
 
 //Inputs
-#define ASCII_KEY_UP 65
-#define ASCII_KEY_DOWN 66
-#define ASCII_KEY_RIGHT 67
-#define ASCII_KEY_LEFT 68
+#define key_up 65
+#define key_down 66
+#define key_right 67
+#define key_left 68
 
 //Loop rate
 #define FREQ_INTERFACE 50.0
 
 ros::ServiceClient manage_behavior_srv;
 ros::ServiceClient check_situation_srv;
+ros::ServiceClient deactivate_behavior_srv;
 
 void printoutControls();
 
@@ -78,6 +79,7 @@ std::vector <std::string> packages;
 std::vector <std::string> key_printed;
 std::vector <int> priorities; 
 std::vector <std::string> parameters;
+std::vector <std::vector <std::string>> deactivations;
 
 int pointer_c;
 

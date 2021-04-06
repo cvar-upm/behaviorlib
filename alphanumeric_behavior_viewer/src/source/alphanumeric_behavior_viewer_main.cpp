@@ -108,13 +108,32 @@ int main(int argc, char** argv){
         active_behaviors.erase(it);
         int index = it - active_behaviors.begin();
         active_behaviors_parameters.erase(active_behaviors_parameters.begin() + index);
+        for (int j = 0; j < active_behaviors.size(); j++){
+          move (pointer_d + index +1 + j, 0);clrtoeol();
+        }    
+      }
+      else if (check_activation_msg.response.is_active && it != active_behaviors.end()){
+        std::string str = "& ";
+        std::string str2 = "\n";
+        size_t found = check_activation_msg.response.parameters.find(str2);
+        if (found != std::string::npos){            
+          check_activation_msg.response.parameters.replace(found, 1, str);           
+        }
+        int index = it - active_behaviors.begin();
+        if (active_behaviors_parameters.at(index) != check_activation_msg.response.parameters){
+          active_behaviors.erase(it);
+          active_behaviors_parameters.erase(active_behaviors_parameters.begin() + index);
 
-        move (pointer_d + i, 0);clrtoeol(); //printw("                                                                                             ");
-    
+          for (int j = 0; j < active_behaviors.size(); j++){
+            move (pointer_d + index +1 + j, 0);clrtoeol();
+          } 
+          active_behaviors.push_back(behaviors.at(i));
+          active_behaviors_parameters.push_back(check_activation_msg.response.parameters);                
+        }        
       }
     }
     pointer_c = 4;
-    move (pointer_c, 0);  
+    move (pointer_c, 0);clrtoeol(); 
     for (int i = 0; i< active_behaviors.size(); i++){
       
       printw(" ");printw(active_behaviors.at(i).c_str()); printw(" "); printw (active_behaviors_parameters.at(i).c_str());
