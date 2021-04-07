@@ -42,7 +42,7 @@ LAND:
 
 ROTATE:
     package: quadrotor_motion_with_pid_control
-    node: rotate_with_pid_control
+    node: behavior_rotate_with_pid_control
     parameters: "angle: 10"
     key: r 
     deactivation: [key_up, key_down, key_right, key_left, h]
