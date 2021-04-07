@@ -49,7 +49,8 @@ int main(int argc, char** argv){
   use_default_colors();  
   curs_set(0);
   noecho();
-  nodelay(stdscr, TRUE);
+  //nodelay(stdscr, TRUE);
+  keypad(stdscr, TRUE);
   erase();
   refresh();
   init_pair(1, COLOR_BLUE, -1);
@@ -61,6 +62,7 @@ int main(int argc, char** argv){
 
   //Input variable
   char command = 0;
+  int commandInt = 0;
   pointer_c = 0;
 
   
@@ -91,22 +93,43 @@ int main(int argc, char** argv){
     int uppercase = 0;
     //Read command
 
-    command = getch(); 
+    //command = getch();
+    commandInt = getch();
+    command = commandInt;
     std::string s(1, command);
-    switch (command){
-      case key_up:
+    if (commandInt == KEY_UP){
+      s = "key_up";
+    }
+    else if (commandInt == KEY_LEFT){
+      s = "key_left";
+    }
+    else if (commandInt == KEY_RIGHT){
+      s = "key_right";
+    }
+    else if (commandInt == KEY_DOWN){
+      s = "key_down";
+    }
+    else {
+        if (isupper(command)){
+          uppercase = 1;
+          command = command + 32;
+          s = command;
+        }      
+    }    
+    /*switch (commandInt){
+      case KEY_UP:
         s = "key_up";
 
         break;
-      case key_down:
+      case KEY_DOWN:
         s = "key_down";
 
         break;
-      case key_left:
+      case KEY_LEFT:
         s = "key_left";
 
         break; 
-      case key_right:
+      case KEY_RIGHT:
         s = "key_right";
         break;
 
@@ -116,7 +139,7 @@ int main(int argc, char** argv){
           command = command + 32;
           s = command;
         }
-    }
+    }*/
     
     move (pointer_c, 0);
     auto it = find(mappings.begin(), mappings.end(), s);
