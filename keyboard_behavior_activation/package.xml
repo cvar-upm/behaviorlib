@@ -20,7 +20,6 @@
 	<build_depend>robot_process</build_depend>
 	<build_depend>behavior_execution_manager</build_depend>
 	<build_depend>aerostack_msgs</build_depend>
-	<build_depend>behavior_coordinator_msgs</build_depend>
 	<build_depend>behavior_execution_manager_msgs</build_depend>
 
 
@@ -32,7 +31,6 @@
 	<run_depend>robot_process</run_depend>
 	<run_depend>behavior_execution_manager</run_depend>
 	<run_depend>aerostack_msgs</run_depend>
-	<run_depend>behavior_coordinator_msgs</run_depend>
 	<run_depend>behavior_execution_manager_msgs</run_depend>
 
 

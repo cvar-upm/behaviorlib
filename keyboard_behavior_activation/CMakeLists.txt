@@ -26,13 +26,13 @@ set(KEYBOARD_BEHAVIOR_ACTIVATION_SOURCE_FILES
 
 
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs droneMsgsROS
-  drone_process robot_process sensor_msgs geometry_msgs image_transport aerostack_msgs behavior_coordinator_msgs behavior_execution_manager behavior_execution_manager_msgs)
+  drone_process robot_process sensor_msgs geometry_msgs image_transport aerostack_msgs behavior_execution_manager behavior_execution_manager_msgs)
 
 catkin_package(
         INCLUDE_DIRS ${KEYBOARD_BEHAVIOR_ACTIVATION_CONTROLLER_INCLUDE_DIR}
         LIBRARIES keyboard_behavior_activation_lib
         DEPENDS yaml-cpp
-        CATKIN_DEPENDS roscpp std_msgs robot_process sensor_msgs geometry_msgs image_transport aerostack_msgs behavior_coordinator_msgs behavior_execution_manager behavior_execution_manager_msgs)
+        CATKIN_DEPENDS roscpp std_msgs robot_process sensor_msgs geometry_msgs image_transport aerostack_msgs behavior_execution_manager behavior_execution_manager_msgs)
 
 include_directories(${catkin_INCLUDE_DIRS})
 
