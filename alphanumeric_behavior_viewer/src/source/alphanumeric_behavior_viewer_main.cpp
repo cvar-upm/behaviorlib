@@ -1,5 +1,5 @@
 /*!*******************************************************************************************
- * \brief     Keyboard teleoperation with behaviors implementation file.
+ * \brief     Alphanumeric behavior viewer implementation file.
  * \authors   Javier Melero Deza
  * \copyright Copyright (c) 2021 Universidad Politecnica de Madrid
  *

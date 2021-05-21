@@ -28,8 +28,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *******************************************************************************/
 
-#ifndef KEYBOARD_BEHAVIOR_TELEOPERATION_MAIN_H
-#define KEYBOARD_BEHAVIOR_TELEOPERATION_MAIN_H
+#ifndef KEYBOARD_BEHAVIOR_TELEOPERATION_H
+#define KEYBOARD_BEHAVIOR_TELEOPERATION_H
 
 #include <string>
 #include "ros/ros.h"
