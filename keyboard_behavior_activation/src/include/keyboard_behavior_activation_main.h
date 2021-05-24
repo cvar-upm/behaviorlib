@@ -56,7 +56,7 @@
 
 
 //Loop rate
-#define FREQ_INTERFACE 50.0
+#define FREQ_INTERFACE 5.0
 
 ros::ServiceClient manage_behavior_srv;
 ros::ServiceClient check_situation_srv;

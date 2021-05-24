@@ -47,7 +47,7 @@
 #include "yaml-cpp/yaml.h"
 
 //Loop rate
-#define FREQ_INTERFACE 50.0
+#define FREQ_INTERFACE 5.0
 
 ros::ServiceClient check_behavior_situation_srv;
 

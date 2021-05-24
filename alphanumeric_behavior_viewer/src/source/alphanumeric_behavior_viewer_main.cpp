@@ -37,7 +37,7 @@ int main(int argc, char** argv){
   ros::init(argc, argv, "ALPHANUMERIC BEHAVIOR VIEWER");
   ros::NodeHandle n("~");
   n.param<std::string>("drone_id_namespace", drone_id_namespace, "drone1");
-  n.param<std::string>("config_file", config_file, "keyboard_behavior_activation_config.yaml");
+  n.param<std::string>("catalog_path", config_file, "behavior_catalog.yaml");
   std::thread thr(&spinnerThread);
   
   //test_take_off = n.serviceClient<behavior_execution_manager_msgs::ActivateBehavior>("/" + drone_id_namespace +  "/" + "quadrotor_motion_with_pid_control/behavior_follow_path" + "/"+ "activate_behavior");
@@ -70,16 +70,19 @@ int main(int argc, char** argv){
   printw("                        - ALPHANUMERIC BEHAVIOR VIEWER -");
   std::string path = config_file;
   YAML::Node config = YAML::LoadFile(path);
-  for(YAML::const_iterator it=config.begin(); it!=config.end(); ++it){
-    const std::string &behavior=it->first.as<std::string>();
-    behaviors.push_back(behavior);
-
-    YAML::Node list = it->second;
-    names.push_back(list["node"].as<std::string>());
-    packages.push_back(list["package"].as<std::string>());    
-  } 
-  //Print controls
-
+  for (YAML::const_iterator behaviorsIterator=config["behaviors"].begin();
+  behaviorsIterator!=config["behaviors"].end();++behaviorsIterator) {
+    
+    behaviors.push_back((*behaviorsIterator)["behavior"].as<std::string>());
+    std::string behavior = (*behaviorsIterator)["behavior"].as<std::string>();
+    std::for_each(behavior.begin(), behavior.end(), [](char & c){
+      c = ::tolower(c);
+    });
+    std::string aux = "behavior_";
+    std::string node = aux + behavior;
+    names.push_back(node);
+    packages.push_back((*behaviorsIterator)["package"].as<std::string>());
+  }
   printoutControls();
   ros::Rate loop_rate(FREQ_INTERFACE);
 
