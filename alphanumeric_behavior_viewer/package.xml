@@ -21,6 +21,8 @@
 	<build_depend>behavior_execution_manager</build_depend>
 	<build_depend>aerostack_msgs</build_depend>
 	<build_depend>behavior_execution_manager_msgs</build_depend>
+	<build_depend>droneMsgsROS</build_depend>
+	<build_depend>drone_process</build_depend>
 
 
 	<run_depend>roscpp</run_depend>
@@ -32,6 +34,8 @@
 	<run_depend>behavior_execution_manager</run_depend>
 	<run_depend>aerostack_msgs</run_depend>
 	<run_depend>behavior_execution_manager_msgs</run_depend>
+	<run_depend>droneMsgsROS</run_depend>
+	<run_depend>drone_process</run_depend>
 
 
 </package>
