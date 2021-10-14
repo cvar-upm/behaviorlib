@@ -28,7 +28,9 @@ If any of the *check* methods does a `setTerminationCause` (see [Protected membe
 
 Here there is a diagram to sum up all the information above.
 
-[[Files/diagrama.jpg]]
+<a href="https://github.com/cvar-upm/behaviorlib/blob/v5-libeccio/doc/behavior-diagram.png">
+       <img src="https://github.com/cvar-upm/behaviorlib/blob/v5-libeccio/doc/behavior-diagram.png" width=400>
+   </a>
 
 
 # Methods 
@@ -199,7 +201,7 @@ BehaviorMoveFoward::BehaviorMoveFoward() {
 }
 ```
 
-Once we have that set we can continue with the virutal methods. The usual way of implementing them is in the same order in which they are executed. As in [Indepth description](#indepth-description), the client of the behavior just creates an instance of it and then calls the `start` method (which starts execution and blocks the calling thread for the rest of the process). When the `start` method is called it invokes `onConfigure`, making it the first function called.
+Once we have that set we can continue with the virutal methods. The usual way of implementing them is in the same order in which they are executed. As in [Description](#description), the client of the behavior just creates an instance of it and then calls the `start` method (which starts execution and blocks the calling thread for the rest of the process). When the `start` method is called it invokes `onConfigure`, making it the first function called.
 
 ```cpp
 // Configuration usually implies setting up all external resources that will be
